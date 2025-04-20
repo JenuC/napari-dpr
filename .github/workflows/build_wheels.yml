@@ -1,107 +1,92 @@
-name: Build and upload wheels
+# ──────────────────────────────────────────────────────────────────────────────
+# 1) Workflow metadata
+# ──────────────────────────────────────────────────────────────────────────────
+name: Build wheels and publish to PyPI
 
 on:
+  # Trigger on any tag push like “v1.2.3”
   push:
-    tags:
-      - 'v*'
-  workflow_dispatch:  # Allow manual triggering
+    tags: [ 'v*' ]
 
+  # Also run on PRs targeting main (for CI)
+  pull_request:
+    branches: [ main ]
+
+permissions:
+  contents: read        # Only need read access to repo files
+  packages: write       # Write access to GitHub Packages (for wheel artifacts)
+  id-token: write       # Needed if you ever use OIDC to authenticate
+
+concurrency:
+  # Prevent overlapping runs on the same ref
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+# ──────────────────────────────────────────────────────────────────────────────
+# 2) Build job: runs on each OS × Python version
+# ──────────────────────────────────────────────────────────────────────────────
 jobs:
   build_wheels:
-    name: Build wheels on ${{ matrix.os }}
+    # Pick the runner from the matrix
     runs-on: ${{ matrix.os }}
+
     strategy:
-      fail-fast: false
+      fail-fast: true   # Bail out early if any axis fails
       matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
-        python-version: ["3.9", "3.10", "3.11", "3.12", "3.13"]
+        os: [ ubuntu-latest, windows-latest, macos-latest ]
+        python-version: [ "3.9", "3.10", "3.11", "3.12" ]
+
+        # (Optional) drop unsupported combos
         exclude:
           - os: macos-latest
-            python-version: 3.13
-        
+            python-version: "3.13"
+
     steps:
-      - uses: actions/checkout@v3
-      
-      - name: Set up Python
+      - name: Check out code
+        uses: actions/checkout@v3
+
+      - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python-version }}
-      
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install cibuildwheel
-      
-      # Different configuration for Windows vs Linux/macOS
-      - name: Build wheels on Windows
-        if: runner.os == 'Windows'
-        run: python -m cibuildwheel --output-dir wheelhouse
-        env:
-          CIBW_BUILD: cp${{ matrix.python-version == '3.13' && '313' || matrix.python-version == '3.12' && '312' || matrix.python-version == '3.11' && '311' || matrix.python-version == '3.10' && '310' || '39' }}-win_amd64
-          CIBW_BEFORE_BUILD: pip install cython numpy
-      
-      - name: Build wheels on Linux/macOS
-        if: runner.os != 'Windows'
-        run: python -m cibuildwheel --output-dir wheelhouse
-        env:
-          CIBW_BUILD: cp${{ matrix.python-version == '3.13' && '313' || matrix.python-version == '3.12' && '312' || matrix.python-version == '3.11' && '311' || matrix.python-version == '3.10' && '310' || '39' }}-*
-          CIBW_SKIP: "*-manylinux_i686 *-musllinux_*"
-          CIBW_ARCHS: "auto64"
-          CIBW_BEFORE_BUILD: pip install cython numpy
-      
-      - name: Upload wheels
+
+      - name: Install build tool
+        run: pip install cibuildwheel==2.*
+
+      - name: Build wheels
+        run: cibuildwheel --output-dir wheelhouse
+
+      - name: Upload built wheels
         uses: actions/upload-artifact@v4
         with:
           name: wheels-${{ matrix.os }}-py${{ matrix.python-version }}
           path: ./wheelhouse/*.whl
-  
-  build_sdist:
-    name: Build source distribution
-    runs-on: ubuntu-latest
-    
-    steps:
-      - uses: actions/checkout@v3
-      
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.11'
-      
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install build
-      
-      - name: Build sdist
-        run: python -m build --sdist
-      
+
+      - name: Build source archive (sdist)
+        run: python -m build
+
       - name: Upload sdist
         uses: actions/upload-artifact@v4
         with:
           name: sdist
           path: dist/*.tar.gz
-  
+
+# ──────────────────────────────────────────────────────────────────────────────
+# 3) Publish job: runs only on version tags (e.g. v0.1.0)
+# ──────────────────────────────────────────────────────────────────────────────
   upload_pypi:
-    name: Upload to PyPI
-    needs: [build_wheels, build_sdist]
+    needs: build_wheels
+    if: startsWith(github.ref, 'refs/tags/v')
     runs-on: ubuntu-latest
-    # Only upload to PyPI on tag pushes
-    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
-    
+
     steps:
-      - uses: actions/download-artifact@v4
+      - name: Download artifacts
+        uses: actions/download-artifact@v4
         with:
-          path: dist
-      
-      - name: Prepare distribution files
-        run: |
-          mkdir -p dist-for-pypi
-          cp dist/*/*.whl dist-for-pypi/
-          cp dist/sdist/*.tar.gz dist-for-pypi/
-      
-      - name: Upload to PyPI
+          path: dist-for-pypi/
+
+      - name: Publish to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
-          user: __token__
+          # Store your PyPI token in repo Secrets → PYPI_API_TOKEN
           password: ${{ secrets.PYPI_API_TOKEN }}
-          packages-dir: dist-for-pypi/ 
