@@ -1,11 +1,22 @@
 # napari-dpr
 
-[![License MIT](https://img.shields.io/badge/license-MIT-green.svg)](https://opensource.org/licenses/MIT)
+[![Build Status](https://github.com/JenuC/napari-dpr/actions/workflows/build_wheels.yml/badge.svg)](https://github.com/JenuC/napari-dpr/actions/workflows/build_wheels.yml)
+[![Publish Status](https://github.com/JenuC/napari-dpr/actions/workflows/publish.yml/badge.svg)](https://github.com/JenuC/napari-dpr/actions/workflows/publish.yml)
 [![PyPI version](https://img.shields.io/pypi/v/napari-dpr.svg)](https://pypi.org/project/napari-dpr)
-[![Python Version](https://img.shields.io/badge/python-3.9%20%7C%203.10%20%7C%203.11%20%7C%203.12%20%7C%203.13-blue.svg)](https://python.org)
+[![Downloads](https://pepy.tech/badge/napari-dpr)](https://pepy.tech/project/napari-dpr)
+[![Python Versions](https://img.shields.io/pypi/pyversions/napari-dpr.svg)](https://www.python.org)
+[![Coverage Status](https://img.shields.io/codecov/c/github/JenuC/napari-dpr.svg)](https://codecov.io/gh/JenuC/napari-dpr)
+[![License](https://img.shields.io/badge/license-MIT-green.svg)](https://opensource.org/licenses/MIT)
 [![napari hub](https://img.shields.io/badge/napari-hub-purple.svg)](https://napari-hub.org/plugins/napari-dpr)
+[![GitHub Release](https://img.shields.io/github/v/release/JenuC/napari-dpr?logo=github)](https://github.com/JenuC/napari-dpr/releases)
+[![Last Commit](https://img.shields.io/github/last-commit/JenuC/napari-dpr.svg)](https://github.com/JenuC/napari-dpr/commits/main)
+[![Dependencies](https://img.shields.io/librariesio/github/JenuC/napari-dpr)](https://libraries.io/github/JenuC/napari-dpr)
+[![Vulnerabilities](https://img.shields.io/snyk/vulnerabilities/github/JenuC/napari-dpr)](https://snyk.io/test/github/JenuC/napari-dpr)
+[![Closed Issues](https://img.shields.io/github/issues-closed-raw/JenuC/napari-dpr.svg)](https://github.com/JenuC/napari-dpr/issues?q=is%3Aissue+is%3Aclosed)
 
-> ## ⚠️ IMPORTANT: Original Work Acknowledgment
+
+
+> ## IMPORTANT: Original Work Acknowledgment
 > This napari plugin is based on and extends the work from the original [DPR-Resolution_enhancement_with_deblurring_by_pixel_reassignment](https://github.com/biomicroscopy/DPR-Resolution_enhancement_with_deblurring_by_pixel_reassignment) repository. 
 >
 > The algorithm was originally developed by Zhao, B. and Mertz, J., as described in their paper ["Resolution enhancement with deblurring by pixel reassignment (DPR)"](https://www.spiedigitallibrary.org/journals/advanced-photonics/volume-5/issue-06/066004/Resolution-enhancement-with-deblurring-by-pixel-reassignment/10.1117/1.AP.5.6.066004.full) (DOI: 10.1117/1.AP.5.6.066004).
