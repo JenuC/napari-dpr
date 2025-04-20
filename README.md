@@ -1,18 +1,12 @@
 # napari-dpr
 
-[![Build Status](https://github.com/JenuC/napari-dpr/actions/workflows/build_wheels.yml/badge.svg)](https://github.com/JenuC/napari-dpr/actions/workflows/build.yml)
+[![Build Status](https://github.com/JenuC/napari-dpr/actions/workflows/build.yml/badge.svg)](https://github.com/JenuC/napari-dpr/actions/workflows/build.yml)
 [![Publish Status](https://github.com/JenuC/napari-dpr/actions/workflows/publish.yml/badge.svg)](https://github.com/JenuC/napari-dpr/actions/workflows/publish.yml)
 [![PyPI version](https://img.shields.io/pypi/v/napari-dpr.svg)](https://pypi.org/project/napari-dpr)
-[![Downloads](https://pepy.tech/badge/napari-dpr)](https://pepy.tech/project/napari-dpr)
 [![Python Versions](https://img.shields.io/pypi/pyversions/napari-dpr.svg)](https://www.python.org)
-[![Coverage Status](https://img.shields.io/codecov/c/github/JenuC/napari-dpr.svg)](https://codecov.io/gh/JenuC/napari-dpr)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](https://opensource.org/licenses/MIT)
 [![napari hub](https://img.shields.io/badge/napari-hub-purple.svg)](https://napari-hub.org/plugins/napari-dpr)
-[![GitHub Release](https://img.shields.io/github/v/release/JenuC/napari-dpr?logo=github)](https://github.com/JenuC/napari-dpr/releases)
 [![Last Commit](https://img.shields.io/github/last-commit/JenuC/napari-dpr.svg)](https://github.com/JenuC/napari-dpr/commits/main)
-[![Dependencies](https://img.shields.io/librariesio/github/JenuC/napari-dpr)](https://libraries.io/github/JenuC/napari-dpr)
-[![Vulnerabilities](https://img.shields.io/snyk/vulnerabilities/github/JenuC/napari-dpr)](https://snyk.io/test/github/JenuC/napari-dpr)
-[![Closed Issues](https://img.shields.io/github/issues-closed-raw/JenuC/napari-dpr.svg)](https://github.com/JenuC/napari-dpr/issues?q=is%3Aissue+is%3Aclosed)
 
 
 
