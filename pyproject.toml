@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "napari-dpr"
 version = "0.1.0"
-description = "Napari plugin for DPR"
+description = "Napari plugin for DPR Resolution Enhancement"
 readme = "README.md"
 requires-python = ">=3.9"
 license = "MIT"
@@ -22,9 +22,12 @@ classifiers = [
     "Programming Language :: Python :: 3.13",
     "Operating System :: OS Independent",
     "Framework :: napari",
+    "Intended Audience :: Science/Research",
+    "Topic :: Scientific/Engineering :: Bio-Informatics",
+    "Topic :: Scientific/Engineering :: Image Processing",
 ]
 dependencies = [
-    "napari>=0.4.15",
+    "napari>=0.4.18",
     "numpy>=1.24.3",
     "scipy>=1.10.1",
     "matplotlib>=3.7.2",
@@ -32,29 +35,50 @@ dependencies = [
     "setuptools>=42.0.0",
     "tifffile",
     "pillow",
+    "magicgui>=0.5.0",
+    "qtpy",
 ]
 
 [project.optional-dependencies]
 dev = ["pytest", "build", "twine", "cibuildwheel"]
+testing = ["pytest", "pytest-qt"]
 
 [project.urls]
 "Homepage" = "https://github.com/jenuc/napari-dpr"
 "Bug Tracker" = "https://github.com/jenuc/napari-dpr/issues"
+"Documentation" = "https://github.com/jenuc/napari-dpr#README.md"
 
 [tool.setuptools]
 package-dir = {"" = "src"}
 packages = ["napari_dpr"]
 
 [tool.setuptools.package-data]
-"*" = ["*.pyx", "*.pyd"]
+"napari_dpr" = ["*.yaml", "*.pyx", "*.pyd"]
+
+[project.entry-points."napari.manifest"]
+napari-dpr = "napari_dpr:napari.yaml"
 
 # Configuration for building wheels
 [tool.cibuildwheel]
-# Python versions to build wheels for
+# Python versions to build wheels for - use underscore to separate items
 build = ["cp39-*", "cp310-*", "cp311-*", "cp312-*", "cp313-*"]
-skip = ["*-musllinux_*"]
+# Skip 32-bit builds and musllinux builds
+skip = ["*-win32", "*-manylinux_i686", "*-musllinux_*"]
+
+# Build only for 64-bit architectures
+archs = ["auto64"]
 
 # Configure environment variables for building
 [tool.cibuildwheel.environment]
 CFLAGS = "-O3"
 CXXFLAGS = "-O3"
+
+# Windows specific settings
+[tool.cibuildwheel.windows]
+# Explicitly target 64-bit Windows for specific Python versions
+build = ["cp39-win_amd64", "cp310-win_amd64", "cp311-win_amd64", "cp312-win_amd64", "cp313-win_amd64"]
+
+# macOS specific settings
+[tool.cibuildwheel.macos]
+# Target only 64-bit builds for macOS
+archs = ["x86_64", "arm64"]

@@ -1,0 +1,10 @@
+name: napari-dpr
+display_name: DPR Resolution Enhancement
+contributions:
+  commands:
+    - id: napari-dpr.enhance_image
+      title: Enhance resolution with DPR
+      python_name: napari_dpr._widget:enhance_image
+  widgets:
+    - command: napari-dpr.enhance_image
+      display_name: DPR Enhancement 

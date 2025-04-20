@@ -28,11 +28,21 @@ jobs:
           python -m pip install --upgrade pip
           pip install cibuildwheel
       
-      - name: Build wheels
+      # Different configuration for Windows vs Linux/macOS
+      - name: Build wheels on Windows
+        if: runner.os == 'Windows'
+        run: python -m cibuildwheel --output-dir wheelhouse
+        env:
+          CIBW_BUILD: cp${{ matrix.python-version == '3.13' && '313' || matrix.python-version == '3.12' && '312' || matrix.python-version == '3.11' && '311' || matrix.python-version == '3.10' && '310' || '39' }}-win_amd64
+          CIBW_BEFORE_BUILD: pip install cython numpy
+      
+      - name: Build wheels on Linux/macOS
+        if: runner.os != 'Windows'
         run: python -m cibuildwheel --output-dir wheelhouse
         env:
           CIBW_BUILD: cp${{ matrix.python-version == '3.13' && '313' || matrix.python-version == '3.12' && '312' || matrix.python-version == '3.11' && '311' || matrix.python-version == '3.10' && '310' || '39' }}-*
-          CIBW_SKIP: "*-musllinux_*"
+          CIBW_SKIP: "*-manylinux_i686 *-musllinux_*"
+          CIBW_ARCHS: "auto64"
           CIBW_BEFORE_BUILD: pip install cython numpy
       
       - name: Upload wheels
