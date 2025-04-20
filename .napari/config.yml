@@ -1,0 +1,56 @@
+project_urls:
+  Documentation: https://github.com/jenuc/napari-dpr#readme
+  Source Code: https://github.com/jenuc/napari-dpr
+  Bug Tracker: https://github.com/jenuc/napari-dpr/issues
+  User Support: https://github.com/jenuc/napari-dpr/issues
+
+# Additional information about your plugin
+display_name: DPR Resolution Enhancement
+summary: Enhance image resolution using Deconvolution by Pixel Reassignment (DPR)
+description: |
+  A napari plugin for image resolution enhancement using Deconvolution by Pixel Reassignment (DPR).
+  
+  DPR is a technique for enhancing the resolution of images, particularly useful in microscopy.
+  This plugin provides easy access to DPR functionality within napari, allowing for quick and
+  intuitive image enhancement without leaving your viewer.
+  
+  The algorithm works by:
+  1. Applying a specialized deconvolution approach
+  2. Reassigning pixels based on local information
+  3. Enhancing fine details while preserving image structure
+
+authors:
+  - name: JenuC
+    email: jenu.chacko@wisc.edu
+    orcid: 0000-0000-0000-0000  # Replace with your actual ORCID if you have one
+
+# Keep a list of your plugin's dependencies
+requirements:
+  - napari>=0.4.18
+  - numpy>=1.24.3
+  - scipy>=1.10.1
+  - cython>=0.29.0
+  - matplotlib>=3.7.2
+  - tifffile
+  - pillow
+  - magicgui>=0.5.0
+
+# Specify categories for your plugin
+categories:
+  - Filtering
+  - Deconvolution
+  - Image Processing
+  - Microscopy
+  - Super-resolution
+
+# Add links to any framework/library your plugin uses
+frameworks:
+  - napari
+
+# Add screenshots for your plugin
+screenshots:
+  - path: .napari/screenshot.png  # You'll need to add a screenshot image
+    caption: DPR Resolution Enhancement in action
+
+# Add visibility of the plugin on napari hub
+visibility: public 

@@ -65,19 +65,21 @@ def enhance_image(
     try:
         dpr_out, magnified = apply_dpr(image_data, psf=psf, gain=gain, background=background)
         
+
+        
+        # Add the magnified original for comparison
+        viewer.add_image(
+            magnified.sum(axis=2),  # Sum over the time/channel dimension
+            name=f"{image_layer.name}_magnified",
+            colormap=image_layer.colormap.name,
+        )
+
         # Add the enhanced image to the viewer
         viewer.add_image(
             dpr_out,
             name=f"{image_layer.name}_DPR_enhanced",
             colormap=image_layer.colormap.name,
         )
-        
-        # Also add the magnified original for comparison
-        # viewer.add_image(
-        #     magnified.sum(axis=2),  # Sum over the time/channel dimension
-        #     name=f"{image_layer.name}_magnified",
-        #     colormap=image_layer.colormap.name,
-        # )
         
     except Exception as e:
         import traceback
