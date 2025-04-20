@@ -1,9 +1,22 @@
 # napari-dpr
 
-[![License](https://img.shields.io/pypi/l/napari-dpr.svg?color=green)](https://github.com/jenuc/napari-dpr/raw/main/LICENSE)
-[![PyPI](https://img.shields.io/pypi/v/napari-dpr.svg?color=green)](https://pypi.org/project/napari-dpr)
-[![Python Version](https://img.shields.io/pypi/pyversions/napari-dpr.svg?color=green)](https://python.org)
-[![napari hub](https://img.shields.io/endpoint?url=https://api.napari-hub.org/shields/napari-dpr)](https://napari-hub.org/plugins/napari-dpr)
+[![License MIT](https://img.shields.io/badge/license-MIT-green.svg)](https://opensource.org/licenses/MIT)
+[![PyPI version](https://img.shields.io/pypi/v/napari-dpr.svg)](https://pypi.org/project/napari-dpr)
+[![Python Version](https://img.shields.io/badge/python-3.9%20%7C%203.10%20%7C%203.11%20%7C%203.12%20%7C%203.13-blue.svg)](https://python.org)
+[![napari hub](https://img.shields.io/badge/napari-hub-purple.svg)](https://napari-hub.org/plugins/napari-dpr)
+
+> ## ⚠️ IMPORTANT: Original Work Acknowledgment
+> This napari plugin is based on and extends the work from the original [DPR-Resolution_enhancement_with_deblurring_by_pixel_reassignment](https://github.com/biomicroscopy/DPR-Resolution_enhancement_with_deblurring_by_pixel_reassignment) repository. 
+>
+> The algorithm was originally developed by Zhao, B. and Mertz, J., as described in their paper ["Resolution enhancement with deblurring by pixel reassignment (DPR)"](https://www.spiedigitallibrary.org/journals/advanced-photonics/volume-5/issue-06/066004/Resolution-enhancement-with-deblurring-by-pixel-reassignment/10.1117/1.AP.5.6.066004.full) (DOI: 10.1117/1.AP.5.6.066004).
+>
+> <img src="docs/images/schematic.png" alt="DPR Algorithm Schematic" width="50%">
+>
+> **If you use this plugin for your research, please cite the original paper:**
+> ```
+> Zhao, B., and Mertz, J. "Resolution enhancement with deblurring by pixel reassignment (DPR)." 
+> Advanced Photonics, 5(6), 066004 (2023). DOI: 10.1117/1.AP.5.6.066004
+> ```
 
 A napari plugin for image resolution enhancement using Deconvolution by Pixel Reassignment (DPR).
 
