@@ -1,0 +1,28 @@
+name: Publish to PyPI
+
+# Only fire on tag pushes (v*), so you get a separate badge
+on:
+  push:
+    tags: [ 'v*' ]
+
+permissions:
+  contents: read
+  packages: write
+  id-token: write
+
+jobs:
+  upload_pypi:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Download artifacts uploaded by the build
+      - name: Download wheels and sdist
+        uses: actions/download-artifact@v4
+        with:
+          path: dist-for-pypi/
+
+      # Publish them
+      - name: Publish to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          password: ${{ secrets.PYPI_API_TOKEN }}
