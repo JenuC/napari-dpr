@@ -1,0 +1,60 @@
+[build-system]
+requires = ["setuptools>=61.0.0", "wheel", "cython>=0.29.0", "numpy>=1.24.3"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "napari-dpr"
+version = "0.1.0"
+description = "Napari plugin for DPR"
+readme = "README.md"
+requires-python = ">=3.9"
+license = "MIT"
+authors = [
+    {name = "JenuC", email = "jenu.chacko@wisc.edu"}
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10", 
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Operating System :: OS Independent",
+    "Framework :: napari",
+]
+dependencies = [
+    "napari>=0.4.15",
+    "numpy>=1.24.3",
+    "scipy>=1.10.1",
+    "matplotlib>=3.7.2",
+    "cython>=0.29.0",
+    "setuptools>=42.0.0",
+    "tifffile",
+    "pillow",
+]
+
+[project.optional-dependencies]
+dev = ["pytest", "build", "twine", "cibuildwheel"]
+
+[project.urls]
+"Homepage" = "https://github.com/jenuc/napari-dpr"
+"Bug Tracker" = "https://github.com/jenuc/napari-dpr/issues"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+packages = ["napari_dpr"]
+
+[tool.setuptools.package-data]
+"*" = ["*.pyx", "*.pyd"]
+
+# Configuration for building wheels
+[tool.cibuildwheel]
+# Python versions to build wheels for
+build = ["cp39-*", "cp310-*", "cp311-*", "cp312-*", "cp313-*"]
+skip = ["*-musllinux_*"]
+
+# Configure environment variables for building
+[tool.cibuildwheel.environment]
+CFLAGS = "-O3"
+CXXFLAGS = "-O3"

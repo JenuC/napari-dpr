@@ -101,7 +101,7 @@ def display_images(i,m,o):
     plt.tight_layout(); plt.show()
 
 def main():
-    p = 'test_images'
+    p = r'test_data'
     f = input("File name [test_image.tif]: ") or "test_image.tif"
     n,t = f.rsplit('.',1)
     mode = input("Use default params? y/n/e [y]: ").lower() or 'y'

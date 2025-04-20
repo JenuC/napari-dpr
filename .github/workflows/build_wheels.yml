@@ -1,0 +1,93 @@
+name: Build and upload wheels
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:  # Allow manual triggering
+
+jobs:
+  build_wheels:
+    name: Build wheels on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        python-version: ["3.9", "3.10", "3.11", "3.12", "3.13"]
+    
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+      
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install cibuildwheel
+      
+      - name: Build wheels
+        run: python -m cibuildwheel --output-dir wheelhouse
+        env:
+          CIBW_BUILD: cp${{ matrix.python-version == '3.13' && '313' || matrix.python-version == '3.12' && '312' || matrix.python-version == '3.11' && '311' || matrix.python-version == '3.10' && '310' || '39' }}-*
+          CIBW_SKIP: "*-musllinux_*"
+          CIBW_BEFORE_BUILD: pip install cython numpy
+      
+      - name: Upload wheels
+        uses: actions/upload-artifact@v3
+        with:
+          name: wheels-${{ matrix.os }}-py${{ matrix.python-version }}
+          path: ./wheelhouse/*.whl
+  
+  build_sdist:
+    name: Build source distribution
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+      
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install build
+      
+      - name: Build sdist
+        run: python -m build --sdist
+      
+      - name: Upload sdist
+        uses: actions/upload-artifact@v3
+        with:
+          name: sdist
+          path: dist/*.tar.gz
+  
+  upload_pypi:
+    name: Upload to PyPI
+    needs: [build_wheels, build_sdist]
+    runs-on: ubuntu-latest
+    # Only upload to PyPI on tag pushes
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
+    
+    steps:
+      - uses: actions/download-artifact@v3
+        with:
+          path: dist
+      
+      - name: Prepare distribution files
+        run: |
+          mkdir -p dist-for-pypi
+          cp dist/*/*.whl dist-for-pypi/
+          cp dist/sdist/*.tar.gz dist-for-pypi/
+      
+      - name: Upload to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          user: __token__
+          password: ${{ secrets.PYPI_API_TOKEN }}
+          packages-dir: dist-for-pypi/ 
