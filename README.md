@@ -1,6 +1,6 @@
 # napari-dpr
 
-[![Build Status](https://github.com/JenuC/napari-dpr/actions/workflows/build_wheels.yml/badge.svg)](https://github.com/JenuC/napari-dpr/actions/workflows/build_wheels.yml)
+[![Build Status](https://github.com/JenuC/napari-dpr/actions/workflows/build_wheels.yml/badge.svg)](https://github.com/JenuC/napari-dpr/actions/workflows/build.yml)
 [![Publish Status](https://github.com/JenuC/napari-dpr/actions/workflows/publish.yml/badge.svg)](https://github.com/JenuC/napari-dpr/actions/workflows/publish.yml)
 [![PyPI version](https://img.shields.io/pypi/v/napari-dpr.svg)](https://pypi.org/project/napari-dpr)
 [![Downloads](https://pepy.tech/badge/napari-dpr)](https://pepy.tech/project/napari-dpr)
