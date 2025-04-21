@@ -57,5 +57,5 @@ jobs:
       - name: Upload sdist
         uses: actions/upload-artifact@v4
         with:
-          name: sdist
+          name: sdist-${{ matrix.os }}-py${{ matrix.python-version }}
           path: dist/*.tar.gz
