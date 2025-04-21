@@ -1,29 +1,20 @@
-name: Publish to PyPI
-
-# Only fire on tag pushes (v*), so you get a separate badge
 on:
-  workflow_dispatch:
-  push:
-    tags: [ 'v*' ]
-
-permissions:
-  contents: read
-  packages: write
-  id-token: write
+  workflow_run:
+    workflows: ["Build wheels"]      # Name of your build workflow 
+    types: [completed]
 
 jobs:
   upload_pypi:
     runs-on: ubuntu-latest
-
     steps:
-      # Download artifacts uploaded by the build
-      - name: Download artifacts
+      - name: Download build artifacts
         uses: actions/download-artifact@v4
         with:
+          # pull from the build workflow’s run
+          run-id: ${{ github.event.workflow_run.id }}
           path: dist/
-          merge-multiple: true   # <-- flatten all artifacts into this one folder
+          merge-multiple: true
 
-      # Publish them
       - name: Publish to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
