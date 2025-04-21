@@ -4,35 +4,86 @@ on:
   workflow_dispatch:
     inputs:
       run_id:
-        description: '14567332449'
+        description: 'The run ID of the build workflow to download artifacts from'
         required: true
         type: string
 
 permissions:
   contents: read
-  actions: read  # This is crucial for downloading artifacts
+  actions: read
 
 jobs:
   upload_pypi:
     runs-on: ubuntu-latest
     steps:
-      # Create a directory for the artifacts
-      - name: Create dist directory
-        run: mkdir -p dist
-
-      # Download artifacts using the specified run ID
-      - name: Download artifacts
-        uses: dawidd6/action-download-artifact@v3
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      
+      - name: Set up Python
+        uses: actions/setup-python@v4
         with:
-          workflow: Build wheels
-          run_id: ${{ inputs.run_id }}
-          path: dist
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          
-      # Debug to see what we've got
-      - name: List downloaded files
-        run: ls -la dist/
+          python-version: '3.10'
+      
+      - name: Install GitHub CLI
+        run: |
+          pip install -U pip
+          pip install gh-downloader pypi-simple
+      
+      - name: Download artifacts using GitHub CLI
+        run: |
+          mkdir -p dist
+          python -c "
+          import os
+          import sys
+          import requests
+          import time
+          import json
 
+          run_id = '${{ inputs.run_id }}'
+          repo = 'JenuC/napari-dpr'
+          token = '${{ secrets.GITHUB_TOKEN }}'
+
+          artifacts_url = f'https://api.github.com/repos/{repo}/actions/runs/{run_id}/artifacts'
+          headers = {'Authorization': f'token {token}', 'Accept': 'application/vnd.github.v3+json'}
+
+          print(f'Fetching artifacts from run ID: {run_id}')
+          response = requests.get(artifacts_url, headers=headers)
+          data = response.json()
+
+          if response.status_code != 200:
+              print(f'Error fetching artifacts: {response.status_code}')
+              print(response.text)
+              sys.exit(1)
+
+          print(f'Found {len(data.get(\"artifacts\", []))} artifacts')
+          print(json.dumps(data, indent=2))
+
+          for artifact in data.get('artifacts', []):
+              name = artifact['name']
+              url = artifact['archive_download_url']
+              print(f'Downloading {name} from {url}')
+              
+              download_response = requests.get(url, headers=headers, stream=True)
+              if download_response.status_code != 200:
+                  print(f'Failed to download {name}: {download_response.status_code}')
+                  continue
+                  
+              zip_path = f'dist/{name}.zip'
+              with open(zip_path, 'wb') as f:
+                  for chunk in download_response.iter_content(chunk_size=8192):
+                      f.write(chunk)
+              
+              print(f'Downloaded {name} to {zip_path}')
+              os.system(f'unzip -o {zip_path} -d dist/')
+              os.system(f'rm {zip_path}')
+          "
+      
+      - name: Debug artifacts
+        run: |
+          ls -la
+          ls -la dist/ || echo "dist directory not found or empty"
+          find . -type f -name "*.whl" -o -name "*.tar.gz"
+      
       - name: Publish to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
