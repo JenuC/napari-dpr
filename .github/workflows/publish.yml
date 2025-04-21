@@ -1,3 +1,5 @@
+name: Publish to PyPI
+
 on:
   workflow_run:
     workflows: ["Build wheels"]      # Name of your build workflow 
@@ -5,15 +7,26 @@ on:
 
 jobs:
   upload_pypi:
+    # Only run if the build workflow was successful
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
     steps:
-      - name: Download build artifacts
-        uses: actions/download-artifact@v4
+      # Create a directory for the artifacts
+      - name: Create dist directory
+        run: mkdir -p dist
+
+      # Download wheels artifacts
+      - name: Download wheel artifacts
+        uses: dawidd6/action-download-artifact@v2
         with:
-          # pull from the build workflow’s run
-          run-id: ${{ github.event.workflow_run.id }}
-          path: dist/
-          merge-multiple: true
+          workflow: Build wheels
+          workflow_conclusion: success
+          run_id: ${{ github.event.workflow_run.id }}
+          path: dist
+          
+      # Debug to see what we've got
+      - name: List downloaded files
+        run: ls -la dist/
 
       - name: Publish to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
