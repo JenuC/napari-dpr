@@ -39,8 +39,8 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
-      - name: Install cibuildwheel
-        run: pip install cibuildwheel==2.*
+      - name: Install ci-build-wheel and build
+        run: pip install cibuildwheel==2.* build
 
       - name: Build wheels
         run: cibuildwheel --output-dir wheelhouse
