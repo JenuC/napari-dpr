@@ -17,10 +17,10 @@ jobs:
 
     steps:
       # Download artifacts uploaded by the build
-      - name: Download wheels and sdist
+      - name: Download artefacts
         uses: actions/download-artifact@v4
         with:
-          path: dist-for-pypi/
+          path: dist/
 
       # Publish them
       - name: Publish to PyPI
