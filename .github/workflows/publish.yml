@@ -83,8 +83,16 @@ jobs:
           ls -la
           ls -la dist/ || echo "dist directory not found or empty"
           find . -type f -name "*.whl" -o -name "*.tar.gz"
-      
+
+      - name: Debug dist directory content
+        run: |
+          echo "Contents of dist directory:"
+          find dist -type f | sort
+          echo "File details:"
+          find dist -type f -exec ls -la {} \;
+
       - name: Publish to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
           password: ${{ secrets.PYPI_API_TOKEN }}
+          skip_existing: true  # Add this line to skip if version exists
