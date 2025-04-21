@@ -1,28 +1,33 @@
 name: Publish to PyPI
 
 on:
-  workflow_run:
-    workflows: ["Build wheels"]      # Name of your build workflow 
-    types: [completed]
+  workflow_dispatch:
+    inputs:
+      run_id:
+        description: '14567332449'
+        required: true
+        type: string
+
+permissions:
+  contents: read
+  actions: read  # This is crucial for downloading artifacts
 
 jobs:
   upload_pypi:
-    # Only run if the build workflow was successful
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
     steps:
       # Create a directory for the artifacts
       - name: Create dist directory
         run: mkdir -p dist
 
-      # Download wheels artifacts
-      - name: Download wheel artifacts
-        uses: dawidd6/action-download-artifact@v2
+      # Download artifacts using the specified run ID
+      - name: Download artifacts
+        uses: dawidd6/action-download-artifact@v3
         with:
           workflow: Build wheels
-          workflow_conclusion: success
-          run_id: ${{ github.event.workflow_run.id }}
+          run_id: ${{ inputs.run_id }}
           path: dist
+          github_token: ${{ secrets.GITHUB_TOKEN }}
           
       # Debug to see what we've got
       - name: List downloaded files
