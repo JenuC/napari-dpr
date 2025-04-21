@@ -2,6 +2,7 @@ name: Publish to PyPI
 
 # Only fire on tag pushes (v*), so you get a separate badge
 on:
+  workflow_dispatch:
   push:
     tags: [ 'v*' ]
 
