@@ -54,8 +54,17 @@ jobs:
       - name: Build source archive
         run: python -m build
 
+      # Upload all OS-Python version combinations 
+      # (not needed for identical source dist.) 
+      # - name: Upload sdist
+      #   uses: actions/upload-artifact@v4
+      #   with:
+      #     name: sdist-${{ matrix.os }}-py${{ matrix.python-version }}
+      #     path: dist/*.tar.gz
+      
       - name: Upload sdist
+        if: matrix.os == 'ubuntu-latest' && matrix.python-version == '3.11'
         uses: actions/upload-artifact@v4
         with:
-          name: sdist-${{ matrix.os }}-py${{ matrix.python-version }}
+          name: sdist
           path: dist/*.tar.gz
